@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Feet ⇄ Inches Converter</title>
+<style>
+  :root {
+    --bg: #faf8f5;
+    --ink: #3a3630;
+    --ink-soft: #7a7266;
+    --panel-a: #e3f2ea;
+    --panel-a-accent: #4c9a7a;
+    --panel-a-accent-deep: #2f7359;
+    --panel-b: #f1e9f6;
+    --panel-b-accent: #9878c4;
+    --panel-b-accent-deep: #7455a3;
+    --card-bg: #ffffff;
+    --divider: #ffffff;
+    --shadow: rgba(58, 54, 48, 0.08);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1a17;
+      --ink: #f2ede4;
+      --ink-soft: #b3aa9c;
+      --panel-a: #16302a;
+      --panel-a-accent: #6fbf9c;
+      --panel-a-accent-deep: #9adcbf;
+      --panel-b: #2a2036;
+      --panel-b-accent: #b79ce0;
+      --panel-b-accent-deep: #d3bff2;
+      --card-bg: #241f1a;
+      --divider: #1c1a17;
+      --shadow: rgba(0, 0, 0, 0.35);
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 720px) {
+    body { flex-direction: row; }
+  }
+
+  .panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1.5rem;
+    border-bottom: 3px solid var(--divider);
+  }
+
+  @media (min-width: 720px) {
+    .panel {
+      border-bottom: none;
+      border-right: 3px solid var(--divider);
+    }
+    .panel:last-child { border-right: none; }
+  }
+
+  .panel-a { background: var(--panel-a); }
+  .panel-b { background: var(--panel-b); }
+
+  .card {
+    width: 100%;
+    max-width: 26rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .eyebrow {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  .panel-a .eyebrow { color: var(--panel-a-accent-deep); }
+  .panel-b .eyebrow { color: var(--panel-b-accent-deep); }
+
+  .title {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 800;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    font-size: 2.2rem;
+    font-variant-numeric: tabular-nums;
+    padding: 0.65rem 0.9rem;
+    border-radius: 1rem;
+    border: 3px solid transparent;
+    background: var(--card-bg);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  input[type="number"]:focus-visible {
+    border-color: var(--panel-a-accent);
+    outline: none;
+  }
+
+  .panel-a input[type="number"]:focus { border-color: var(--panel-a-accent); }
+  .panel-b input[type="number"]:focus { border-color: var(--panel-b-accent); }
+
+  .results {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+  }
+
+  .result {
+    background: var(--card-bg);
+    border-radius: 1rem;
+    padding: 1rem 1.2rem;
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+
+  .result-label {
+    font-size: 1rem;
+    color: var(--ink-soft);
+    margin: 0 0 0.2rem;
+  }
+
+  .result-value {
+    font-size: 2.4rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .panel-a .result-value { color: var(--panel-a-accent-deep); }
+  .panel-b .result-value { color: var(--panel-b-accent-deep); }
+
+  .unit {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    input[type="number"] { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="panel panel-a">
+  <div class="card">
+    <div>
+      <p class="eyebrow">Feet → Inches</p>
+      <h1 class="title">Convert feet</h1>
+    </div>
+    <div>
+      <label for="feet-input">Feet</label>
+      <input id="feet-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 5.5" />
+    </div>
+    <div class="results">
+      <div class="result">
+        <p class="result-label">Inches</p>
+        <p class="result-value"><span id="ft-to-in">0</span> <span class="unit">in</span></p>
+      </div>
+      <div class="result">
+        <p class="result-label">Inches ÷ 20</p>
+        <p class="result-value"><span id="ft-to-in-div20">0</span> <span class="unit">in</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-b">
+  <div class="card">
+    <div>
+      <p class="eyebrow">Inches → Feet</p>
+      <h1 class="title">Convert inches</h1>
+    </div>
+    <div>
+      <label for="inches-input">Inches</label>
+      <input id="inches-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 66" />
+    </div>
+    <div class="results">
+      <div class="result">
+        <p class="result-label">Feet</p>
+        <p class="result-value"><span id="in-to-ft">0</span> <span class="unit">ft</span></p>
+      </div>
+      <div class="result">
+        <p class="result-label">Inches × 20, in feet</p>
+        <p class="result-value"><span id="in-to-ft-mul20">0</span> <span class="unit">ft</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function formatNum(n) {
+    if (!isFinite(n)) return "0";
+    return (Math.round(n * 10000) / 10000).toString();
+  }
+
+  const feetInput = document.getElementById("feet-input");
+  const ftToIn = document.getElementById("ft-to-in");
+  const ftToInDiv20 = document.getElementById("ft-to-in-div20");
+
+  feetInput.addEventListener("input", () => {
+    const feet = parseFloat(feetInput.value);
+    const inches = isFinite(feet) ? feet * 12 : 0;
+    ftToIn.textContent = formatNum(inches);
+    ftToInDiv20.textContent = formatNum(inches / 20);
+  });
+
+  const inchesInput = document.getElementById("inches-input");
+  const inToFt = document.getElementById("in-to-ft");
+  const inToFtMul20 = document.getElementById("in-to-ft-mul20");
+
+  inchesInput.addEventListener("input", () => {
+    const inches = parseFloat(inchesInput.value);
+    const feet = isFinite(inches) ? inches / 12 : 0;
+    inToFt.textContent = formatNum(feet);
+    inToFtMul20.textContent = formatNum((isFinite(inches) ? inches * 20 : 0) / 12);
+  });
+</script>
+</body>
+</html>
