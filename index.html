@@ -42,28 +42,67 @@
   html, body {
     margin: 0;
     height: 100%;
+    overflow: hidden;
   }
 
   body {
     background: var(--bg);
     color: var(--ink);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
   }
 
+  .panels {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+  }
+
   @media (min-width: 720px) {
-    body { flex-direction: row; }
+    .panels { flex-direction: row; }
+  }
+
+  .factor-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.5rem;
+    background: var(--card-bg);
+    border-bottom: 3px solid var(--divider);
+  }
+
+  .factor-bar label {
+    margin: 0;
+    font-size: 1.05rem;
+    white-space: nowrap;
+  }
+
+  .factor-bar input[type="number"] {
+    width: 6rem;
+    font-size: 1.3rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.6rem;
+    border: 2px solid var(--divider);
+  }
+
+  .factor-bar input[type="number"]:focus {
+    border-color: var(--panel-b-accent);
   }
 
   .panel {
     flex: 1;
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 2.5rem 1.5rem;
     border-bottom: 3px solid var(--divider);
+    overflow: hidden;
   }
 
   @media (min-width: 720px) {
@@ -80,8 +119,10 @@
   .card {
     width: 100%;
     max-width: 26rem;
+    max-height: 100%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     gap: 1.5rem;
   }
 
@@ -172,51 +213,100 @@
   @media (prefers-reduced-motion: reduce) {
     input[type="number"] { transition: none; }
   }
+
+  @media (max-width: 719px) {
+    .factor-bar {
+      padding: clamp(0.35rem, 1.5dvh, 0.9rem) 1.25rem;
+      gap: 0.5rem;
+    }
+
+    .factor-bar label { font-size: clamp(0.8rem, 2.2dvh, 1.05rem); }
+
+    .factor-bar input[type="number"] {
+      width: 4.5rem;
+      font-size: clamp(0.9rem, 2.4dvh, 1.3rem);
+      padding: clamp(0.2rem, 0.8dvh, 0.4rem) 0.5rem;
+    }
+
+    .panel {
+      padding: clamp(0.5rem, 2dvh, 1.5rem) 1.25rem;
+    }
+
+    .card { gap: clamp(0.5rem, 1.8dvh, 1.25rem); }
+
+    .eyebrow { font-size: clamp(0.65rem, 1.6dvh, 0.9rem); }
+
+    .title { font-size: clamp(1.1rem, 3.6dvh, 1.9rem); }
+
+    label { font-size: clamp(0.75rem, 2dvh, 1.05rem); margin-bottom: 0.25rem; }
+
+    input[type="number"] {
+      font-size: clamp(1.1rem, 3.4dvh, 2rem);
+      padding: clamp(0.35rem, 1.2dvh, 0.65rem) 0.75rem;
+    }
+
+    .results { gap: clamp(0.4rem, 1.4dvh, 0.9rem); }
+
+    .result { padding: clamp(0.45rem, 1.6dvh, 1rem) 1rem; }
+
+    .result-label { font-size: clamp(0.7rem, 1.8dvh, 1rem); }
+
+    .result-value { font-size: clamp(1.15rem, 3.6dvh, 2.2rem); }
+
+    .unit { font-size: clamp(0.8rem, 1.9dvh, 1.1rem); }
+  }
 </style>
 </head>
 <body>
 
-<div class="panel panel-a">
-  <div class="card">
-    <div>
-      <p class="eyebrow">Feet → Inches</p>
-      <h1 class="title">Convert feet</h1>
-    </div>
-    <div>
-      <label for="feet-input">Feet</label>
-      <input id="feet-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 5.5" />
-    </div>
-    <div class="results">
-      <div class="result">
-        <p class="result-label">Inches</p>
-        <p class="result-value"><span id="ft-to-in">0</span> <span class="unit">in</span></p>
+<div class="factor-bar">
+  <label for="factor-input">Factor</label>
+  <input id="factor-input" type="number" inputmode="decimal" step="any" value="20" />
+</div>
+
+<div class="panels">
+  <div class="panel panel-a">
+    <div class="card">
+      <div>
+        <p class="eyebrow">Feet → Inches</p>
+        <h1 class="title">Convert feet</h1>
       </div>
-      <div class="result">
-        <p class="result-label">Inches ÷ 20</p>
-        <p class="result-value"><span id="ft-to-in-div20">0</span> <span class="unit">in</span></p>
+      <div>
+        <label for="feet-input">Feet</label>
+        <input id="feet-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 5.5" />
+      </div>
+      <div class="results">
+        <div class="result">
+          <p class="result-label">Inches</p>
+          <p class="result-value"><span id="ft-to-in">0</span> <span class="unit">in</span></p>
+        </div>
+        <div class="result">
+          <p class="result-label">Inches ÷ <span class="factor-label">20</span></p>
+          <p class="result-value"><span id="ft-to-in-div20">0</span> <span class="unit">in</span></p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="panel panel-b">
-  <div class="card">
-    <div>
-      <p class="eyebrow">Inches → Feet</p>
-      <h1 class="title">Convert inches</h1>
-    </div>
-    <div>
-      <label for="inches-input">Inches</label>
-      <input id="inches-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 66" />
-    </div>
-    <div class="results">
-      <div class="result">
-        <p class="result-label">Feet</p>
-        <p class="result-value"><span id="in-to-ft">0</span> <span class="unit">ft</span></p>
+  <div class="panel panel-b">
+    <div class="card">
+      <div>
+        <p class="eyebrow">Inches → Feet</p>
+        <h1 class="title">Convert inches</h1>
       </div>
-      <div class="result">
-        <p class="result-label">Inches × 20, in feet</p>
-        <p class="result-value"><span id="in-to-ft-mul20">0</span> <span class="unit">ft</span></p>
+      <div>
+        <label for="inches-input">Inches</label>
+        <input id="inches-input" type="number" inputmode="decimal" step="any" placeholder="e.g. 66" />
+      </div>
+      <div class="results">
+        <div class="result">
+          <p class="result-label">Feet</p>
+          <p class="result-value"><span id="in-to-ft">0</span> <span class="unit">ft</span></p>
+        </div>
+        <div class="result">
+          <p class="result-label">Inches × <span class="factor-label">20</span>, in feet</p>
+          <p class="result-value"><span id="in-to-ft-mul20">0</span> <span class="unit">ft</span></p>
+        </div>
       </div>
     </div>
   </div>
@@ -228,27 +318,40 @@
     return (Math.round(n * 10000) / 10000).toString();
   }
 
+  const factorInput = document.getElementById("factor-input");
+  const factorLabels = document.querySelectorAll(".factor-label");
+
   const feetInput = document.getElementById("feet-input");
   const ftToIn = document.getElementById("ft-to-in");
   const ftToInDiv20 = document.getElementById("ft-to-in-div20");
-
-  feetInput.addEventListener("input", () => {
-    const feet = parseFloat(feetInput.value);
-    const inches = isFinite(feet) ? feet * 12 : 0;
-    ftToIn.textContent = formatNum(inches);
-    ftToInDiv20.textContent = formatNum(inches / 20);
-  });
 
   const inchesInput = document.getElementById("inches-input");
   const inToFt = document.getElementById("in-to-ft");
   const inToFtMul20 = document.getElementById("in-to-ft-mul20");
 
-  inchesInput.addEventListener("input", () => {
-    const inches = parseFloat(inchesInput.value);
-    const feet = isFinite(inches) ? inches / 12 : 0;
-    inToFt.textContent = formatNum(feet);
-    inToFtMul20.textContent = formatNum((isFinite(inches) ? inches * 20 : 0) / 12);
-  });
+  function currentFactor() {
+    const factor = parseFloat(factorInput.value);
+    return isFinite(factor) ? factor : 0;
+  }
+
+  function updateAll() {
+    const factor = currentFactor();
+    factorLabels.forEach((el) => { el.textContent = formatNum(factor); });
+
+    const feet = parseFloat(feetInput.value);
+    const inches = isFinite(feet) ? feet * 12 : 0;
+    ftToIn.textContent = formatNum(inches);
+    ftToInDiv20.textContent = formatNum(factor !== 0 ? inches / factor : 0);
+
+    const inchesVal = parseFloat(inchesInput.value);
+    const feetVal = isFinite(inchesVal) ? inchesVal / 12 : 0;
+    inToFt.textContent = formatNum(feetVal);
+    inToFtMul20.textContent = formatNum((isFinite(inchesVal) ? inchesVal * factor : 0) / 12);
+  }
+
+  factorInput.addEventListener("input", updateAll);
+  feetInput.addEventListener("input", updateAll);
+  inchesInput.addEventListener("input", updateAll);
 </script>
 </body>
 </html>
